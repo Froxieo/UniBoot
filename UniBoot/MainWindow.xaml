@@ -17,17 +17,11 @@
                     <ControlTemplate TargetType="ProgressBar">
                         <Border Background="{TemplateBinding Background}" CornerRadius="4" SnapsToDevicePixels="True">
                             <Grid ClipToBounds="True" Height="{TemplateBinding Height}">
-                                <!-- Track (unfilled area) -->
                                 <Border x:Name="PART_Track" Background="{TemplateBinding Background}" CornerRadius="4"/>
 
-                                <!-- Indicator (filled area) - ProgressBar will change this element's Width -->
-                                <!-- NOTE: Border can have only one child, so we place a Grid inside it to host multiple elements -->
                                 <Border x:Name="PART_Indicator" Background="#FF3A2A8F" HorizontalAlignment="Left" CornerRadius="4" ClipToBounds="True">
                                     <Grid>
-                                        <!-- A subtle base overlay so the filled area has depth -->
                                         <Rectangle Fill="#20FFFFFF" />
-
-                                        <!-- Animated wave placed inside the indicator and clipped by it -->
                                         <Rectangle x:Name="Wave" Width="220" HorizontalAlignment="Left" Opacity="0.95" IsHitTestVisible="False">
                                             <Rectangle.Fill>
                                                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
@@ -39,7 +33,6 @@
                                                 </LinearGradientBrush>
                                             </Rectangle.Fill>
                                             <Rectangle.RenderTransform>
-                                                <!-- TranslateTransform will be animated left → right -->
                                                 <TranslateTransform x:Name="WaveTransform" X="-300"/>
                                             </Rectangle.RenderTransform>
                                         </Rectangle>
@@ -49,11 +42,9 @@
                         </Border>
 
                         <ControlTemplate.Triggers>
-                            <!-- Start the wave animation when the control loads -->
                             <EventTrigger RoutedEvent="FrameworkElement.Loaded">
                                 <BeginStoryboard>
                                     <Storyboard RepeatBehavior="Forever">
-                                        <!-- ajuster Duration/From/To pour changer la vitesse et la portée -->
                                         <DoubleAnimation Storyboard.TargetName="WaveTransform"
                                                          Storyboard.TargetProperty="X"
                                                          From="-300" To="700"
@@ -75,7 +66,53 @@
         <Rectangle Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="720" Height="48" Stroke="Gray" StrokeThickness="0" Fill="#FF313030"/>
         <TextBlock Name="Status" Text="UniBoot" FontSize="24" Margin="0,396,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Height="32" TextAlignment="Center" Foreground="#FFFFFFFF" Width="720"/>
         <TextBlock Text="Froxie's universal updater" FontSize="18" Margin="16,752,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="24" TextAlignment="Center" Foreground="#FF636262" />
-        <Ellipse HorizontalAlignment="Left" VerticalAlignment="Top" Width="220" Height="220" StrokeThickness="4" Stroke="Gray" Margin="245,157,0,0" />
+
+        <!-- Animated ellipse with a moving "light purple" wave on the stroke.
+             The gradient is repeated and its RelativeTransform.X is animated to slide it. -->
+        <Ellipse x:Name="animatedEllipse"
+                 HorizontalAlignment="Left"
+                 VerticalAlignment="Top"
+                 Width="220" Height="220"
+                 StrokeThickness="4"
+                 Margin="245,157,0,0"
+                 Fill="Transparent">
+            <Ellipse.Stroke>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0" MappingMode="RelativeToBoundingBox" SpreadMethod="Repeat">
+                    <GradientStop Color="#00C27CF8" Offset="0.00"/>
+                    <GradientStop Color="#BFF0E8FF" Offset="0.35"/>
+                    <GradientStop Color="#FFC27CF8" Offset="0.50"/>
+                    <GradientStop Color="#BFF0E8FF" Offset="0.65"/>
+                    <GradientStop Color="#00C27CF8" Offset="1.00"/>
+                    <LinearGradientBrush.RelativeTransform>
+                        <!-- start off-screen to the left -->
+                        <TranslateTransform X="-1" />
+                    </LinearGradientBrush.RelativeTransform>
+                </LinearGradientBrush>
+            </Ellipse.Stroke>
+
+            <Ellipse.Triggers>
+                <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                    <BeginStoryboard>
+                        <Storyboard RepeatBehavior="Forever">
+                            <!-- Move the gradient across the stroke -->
+                            <DoubleAnimation Storyboard.TargetName="animatedEllipse"
+                                             Storyboard.TargetProperty="(Shape.Stroke).(LinearGradientBrush.RelativeTransform).(TranslateTransform.X)"
+                                             From="-1" To="1"
+                                             Duration="0:0:1.2"
+                                             RepeatBehavior="Forever" />
+
+                            <!-- Optional: subtle thickness pulse to emphasize the 'push' -->
+                            <DoubleAnimation Storyboard.TargetName="animatedEllipse"
+                                             Storyboard.TargetProperty="StrokeThickness"
+                                             From="4" To="6"
+                                             Duration="0:0:0.6"
+                                             AutoReverse="True"
+                                             RepeatBehavior="Forever" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Ellipse.Triggers>
+        </Ellipse>
 
         <!-- Use the styled ProgressBar. Visibility reste Hidden comme avant; mettez Visible en code-behind -->
         <ProgressBar x:Name="progressBar"
