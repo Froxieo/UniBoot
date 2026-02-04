@@ -7,6 +7,68 @@
       mc:Ignorable="d"
       Width="720" Height="792"
       Foreground="#FF1F1F1F" d:HorizontalAlignment="Center" d:VerticalAlignment="Center" WindowStyle="None" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <Style x:Key="WaveProgressBar" TargetType="ProgressBar">
+            <Setter Property="Background" Value="#FF313030"/>
+            <Setter Property="Height" Value="24"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ProgressBar">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="4" SnapsToDevicePixels="True">
+                            <Grid ClipToBounds="True" Height="{TemplateBinding Height}">
+                                <!-- Track (unfilled area) -->
+                                <Border x:Name="PART_Track" Background="{TemplateBinding Background}" CornerRadius="4"/>
+
+                                <!-- Indicator (filled area) - ProgressBar will change this element's Width -->
+                                <!-- NOTE: Border can have only one child, so we place a Grid inside it to host multiple elements -->
+                                <Border x:Name="PART_Indicator" Background="#FF3A2A8F" HorizontalAlignment="Left" CornerRadius="4" ClipToBounds="True">
+                                    <Grid>
+                                        <!-- A subtle base overlay so the filled area has depth -->
+                                        <Rectangle Fill="#20FFFFFF" />
+
+                                        <!-- Animated wave placed inside the indicator and clipped by it -->
+                                        <Rectangle x:Name="Wave" Width="220" HorizontalAlignment="Left" Opacity="0.95" IsHitTestVisible="False">
+                                            <Rectangle.Fill>
+                                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                                    <GradientStop Color="#00C27CF8" Offset="0.00"/>
+                                                    <GradientStop Color="#BFF0E8FF" Offset="0.35"/>
+                                                    <GradientStop Color="#FFC27CF8" Offset="0.5"/>
+                                                    <GradientStop Color="#BFF0E8FF" Offset="0.65"/>
+                                                    <GradientStop Color="#00C27CF8" Offset="1.00"/>
+                                                </LinearGradientBrush>
+                                            </Rectangle.Fill>
+                                            <Rectangle.RenderTransform>
+                                                <!-- TranslateTransform will be animated left → right -->
+                                                <TranslateTransform x:Name="WaveTransform" X="-300"/>
+                                            </Rectangle.RenderTransform>
+                                        </Rectangle>
+                                    </Grid>
+                                </Border>
+                            </Grid>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <!-- Start the wave animation when the control loads -->
+                            <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                                <BeginStoryboard>
+                                    <Storyboard RepeatBehavior="Forever">
+                                        <!-- ajuster Duration/From/To pour changer la vitesse et la portée -->
+                                        <DoubleAnimation Storyboard.TargetName="WaveTransform"
+                                                         Storyboard.TargetProperty="X"
+                                                         From="-300" To="700"
+                                                         Duration="0:0:1.2"
+                                                         RepeatBehavior="Forever" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
     <Grid Width="720" Height="792" Background="#FF1F1F1F">
         <TextBlock Text="F" FontSize="100" VerticalAlignment="Top" Height="96" FontWeight="Bold" TextAlignment="Center" HorizontalAlignment="Center" Margin="0,200,0,0" Foreground="#FFC27CF8"/>
         <TextBlock Text="F" FontSize="100" VerticalAlignment="Top" Height="144" FontWeight="Bold" TextAlignment="Center" HorizontalAlignment="Center" Margin="0,200,10,0" Foreground="#FFFFFFFF" />
@@ -14,6 +76,16 @@
         <TextBlock Name="Status" Text="UniBoot" FontSize="24" Margin="0,396,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Height="32" TextAlignment="Center" Foreground="#FFFFFFFF" Width="720"/>
         <TextBlock Text="Froxie's universal updater" FontSize="18" Margin="16,752,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="24" TextAlignment="Center" Foreground="#FF636262" />
         <Ellipse HorizontalAlignment="Left" VerticalAlignment="Top" Width="220" Height="220" StrokeThickness="4" Stroke="Gray" Margin="245,157,0,0" />
-        <ProgressBar x:Name="progressBar" Height="24" Margin="30,455,30,0" VerticalAlignment="Top" Foreground="#FFC27CF8" Background="#FF313030" Visibility="Hidden" />
+
+        <!-- Use the styled ProgressBar. Visibility reste Hidden comme avant; mettez Visible en code-behind -->
+        <ProgressBar x:Name="progressBar"
+                     Height="24"
+                     Margin="30,455,30,0"
+                     VerticalAlignment="Top"
+                     Foreground="#FFC27CF8"
+                     Background="#FF313030"
+                     Visibility="Hidden"
+                     Style="{StaticResource WaveProgressBar}"
+                     Minimum="0" Maximum="100" Value="30"/>
     </Grid>
 </Window>
