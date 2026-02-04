@@ -1,0 +1,19 @@
+﻿<Window x:Class="UniBoot.MainWindow"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:UniBoot"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      mc:Ignorable="d"
+      Width="720" Height="792"
+      Foreground="#FF1F1F1F" d:HorizontalAlignment="Center" d:VerticalAlignment="Center" WindowStyle="None" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+    <Grid Width="720" Height="792" Background="#FF1F1F1F">
+        <TextBlock Text="F" FontSize="100" VerticalAlignment="Top" Height="96" FontWeight="Bold" TextAlignment="Center" HorizontalAlignment="Center" Margin="0,200,0,0" Foreground="#FFC27CF8"/>
+        <TextBlock Text="F" FontSize="100" VerticalAlignment="Top" Height="144" FontWeight="Bold" TextAlignment="Center" HorizontalAlignment="Center" Margin="0,200,10,0" Foreground="#FFFFFFFF" />
+        <Rectangle Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="720" Height="48" Stroke="Gray" StrokeThickness="0" Fill="#FF313030"/>
+        <TextBlock Name="Status" Text="UniBoot" FontSize="24" Margin="0,396,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" Height="32" TextAlignment="Center" Foreground="#FFFFFFFF" Width="720"/>
+        <TextBlock Text="Froxie's universal updater" FontSize="18" Margin="16,752,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="24" TextAlignment="Center" Foreground="#FF636262" />
+        <Ellipse HorizontalAlignment="Left" VerticalAlignment="Top" Width="220" Height="220" StrokeThickness="4" Stroke="Gray" Margin="245,157,0,0" />
+        <ProgressBar x:Name="progressBar" Height="24" Margin="30,455,30,0" VerticalAlignment="Top" Foreground="#FFC27CF8" Background="#FF313030" Visibility="Hidden" />
+    </Grid>
+</Window>
